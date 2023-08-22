@@ -56,6 +56,9 @@ module.exports = function (app) {
           _id: data._id
         })
       })
+      .catch((err)=>{
+        res.send('missing required field title')
+      })
        //response will contain new book object including atleast _id and title
     })
     
@@ -85,6 +88,9 @@ module.exports = function (app) {
       else{
       return res.json('no book exists')}
     })
+    .catch((err)=> {
+      console.log(err)
+      res.json('no book exists')})
       //json res format: {"_id": bookid, "title": book_title, "comments": [comment,comment,...]}
     })
     
@@ -92,7 +98,7 @@ module.exports = function (app) {
       let bookid = req.params.id;
       let comment = req.body.comment;
       if(bookid===undefined){return res.send('no book exists')}
-      if(comment===undefined){return res.send('missing required field comment')}
+      if(comment===undefined || comment === ""){return res.send('missing required field comment')}
      await Books.findByIdAndUpdate(bookid,{ $push: { comments: comment } });
      Books.findById(bookid)
        .then((data)=>{
